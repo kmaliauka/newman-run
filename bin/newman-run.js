@@ -31,6 +31,8 @@ const options = yargs
         .option("e", { alias: "environment", describe: "Environment file path file path", type: "string"})
         .option("r", { alias: "remove", describe: "To remove the files from reporting directory"})
         .option("v", { alias: "version", describe: "Current version for the newman-run package"})
+        .option("V", { alias: "verbose", describe: "Verbose mode", type: "boolean"})
+        .option("s", { alias: "series", describe: "Run feed in series", type: "boolean"})
         .check(argv => { if(argv.f == undefined && argv.c == undefined && argv.r == undefined) { console.log(file_error_message); return false } else { return true }})
         .argv
 
@@ -42,7 +44,9 @@ if (options.remove) {
 if (options.version) {
     console.log(version)
 }
-if (options.feed != undefined && options.collection == undefined && options.environment == undefined) {
+if (options.feed != undefined && options.collection == undefined && options.environment == undefined && options.series) {
+    NC.looprun(options.feed, true, options.verbose)
+} else if (options.feed != undefined && options.collection == undefined && options.environment == undefined) {
     NC.looprun(options.feed)
 } else if (options.collection != undefined && options.environment == undefined && options.feed == undefined) {
     NC.runCollection(options.collection)
